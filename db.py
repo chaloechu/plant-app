@@ -32,6 +32,14 @@ class Plant(db.Model):
       "last_watered": self.last_watered,
       "tags": [t.serialize() for t in self.tags]
     }
+  
+  def simple_serialize(self):
+    return {
+      "id": self.id,
+      "name": self.name,
+      "scientific_name": self.scientific_name,
+      "last_watered": self.last_watered
+    }
 
 class Tag(db.Model):
   """
@@ -47,6 +55,11 @@ class Tag(db.Model):
 
   def serialize(self):
     return {
-      "name": self.name
+      "name": self.name,
+      "tagged_plants": [p.serialize() for p in self.tagged_plants]
     }
   
+  def simple_serialze(self):
+    return {
+      "name": self.name
+    }

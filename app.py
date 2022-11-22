@@ -1,5 +1,5 @@
 import json
-
+from datetime import datetime
 from db import db, Plant, Tag
 from flask import Flask, request
 
@@ -124,6 +124,20 @@ def add_tag_to_plant(plant_id):
   db.session.commit()
   return success_response(plant.serialize())
 
+@app.route("/api/plants/<int:plant_id>/", methods=["POST"])
+def update_watered(plant_id):
+  """
+  Endpoint for updating a plant's last watered field
+  """
+  plant = Plant.query.filter_by(id=plant_id).first()
+  if plant is None:
+    return failure_response("Plant not found!")
+
+  # will prolly need to convert this to a readable String actually
+  plant.last_watered = datetime.datetime.now()
+
+  db.session.commit()
+  return success_response(plant.serialize())
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)
