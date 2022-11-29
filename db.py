@@ -17,12 +17,14 @@ class Plant(db.Model):
   name = db.Column(db.String, nullable=False)
   scientific_name = db.Column(db.String, nullable=False)
   last_watered = db.Column(db.String, nullable=False)
+  notes = db.Column(db.String, nullable=False)
   tags = db.relationship("Tag", secondary = tag_association_table, back_populates="tagged_plants")
 
   def __init__(self, **kwargs):
     self.name = kwargs.get("name", "Unnamed")
     self.scientific_name = kwargs.get("scientific_name", "")
     self.last_watered = kwargs.get("last_watered", "Unknown")
+    self.notes = kwargs.get("notes", "")
 
   def serialize(self):
     return {
@@ -30,6 +32,7 @@ class Plant(db.Model):
       "name": self.name,
       "scientific_name": self.scientific_name,
       "last_watered": self.last_watered,
+      "notes": self.notes,
       "tags": [t.serialize() for t in self.tags]
     }
   
@@ -38,7 +41,8 @@ class Plant(db.Model):
       "id": self.id,
       "name": self.name,
       "scientific_name": self.scientific_name,
-      "last_watered": self.last_watered
+      "last_watered": self.last_watered,
+      "notes": self.notes
     }
 
 class Tag(db.Model):

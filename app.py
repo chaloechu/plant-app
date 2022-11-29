@@ -54,7 +54,10 @@ def create_plant():
   watered = body.get("last_watered")
   if watered is None:
     watered = "Unknown"
-  new_plant = Plant(name = body.get("name"), scientific_name = body.get("scientific_name"), last_watered = watered)
+  notes = body.get("notes")
+  if notes is None:
+    notes = ""
+  new_plant = Plant(name = body.get("name"), scientific_name = body.get("scientific_name"), last_watered = watered, notes = notes)
   db.session.add(new_plant)
   db.session.commit()
   return success_response(new_plant.serialize(), 201)
@@ -80,6 +83,32 @@ def delete_plant_by_id(plant_id):
   db.session.delete(plant)
   db.session.commit()
   return success_response(plant.serialize())
+
+@app.route("/api/plants/<int:plant_id>/", methods=["POST"])
+def update_plant_by_id(plant_id):
+  """
+  Endpoint for updating a plant field
+  """
+  plant = Plant.query.filter_by(id=plant_id).first()
+  if plant is None:
+    return failure_response("Plant not found!")
+  body = json.loads(request.data)
+  name = body.get("name")
+  scientific_name = body.get("scientific_name")
+  last_watered = body.get("last_watered")
+  notes = body.get("notes")
+  if name is not None:
+    plant.name = name
+  if scientific_name is not None:
+    plant.scientific_name = scientific_name
+  if last_watered is not None:
+    plant.last_watered = last_watered
+  if notes is not None:
+    plant.notes = notes\
+  
+  db.session.commit()
+  return success_response(plant.simple_serialize(), 201)
+  
 
 @app.route("/api/tags/")
 def get_tags():
