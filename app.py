@@ -2,9 +2,10 @@ import json
 from datetime import datetime
 from db import db, Plant, Tag
 from flask import Flask, request
+from db import Asset
 
 app = Flask(__name__)
-db_filename = "plant_info.db"
+db_filename = " "
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///%s" % db_filename
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -167,6 +168,24 @@ def update_watered(plant_id):
 
   db.session.commit()
   return success_response(plant.serialize())
+
+@app.route("/upload/", methods=["POST"])
+def upload():
+    """
+    Endpoint for uploading an image to AWS given its base64 form,
+    then storing/returning the URL of that image
+    """
+    body = json.loads(request.data)
+    image_data = body.get("image_data")
+
+    if image_data is None:
+        return failure_response("No base64 image found!")
+
+    asset = Asset(image_data = image_data)
+    db.session.add(asset)
+    db.session.commit()
+
+    return success_response(asset.serialize(), 201)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)
