@@ -1,3 +1,6 @@
 .env
 __pycache__
 plant_info.db
+*.zip
+.gitignore
+venv

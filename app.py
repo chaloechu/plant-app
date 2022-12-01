@@ -1,4 +1,4 @@
-import json
+import json, os
 from datetime import datetime
 from db import db, Plant, Tag
 from flask import Flask, request
@@ -14,7 +14,6 @@ app.config["SQLALCHEMY_ECHO"] = True
 db.init_app(app)
 with app.app_context():
     db.create_all()
-
 
 # default responses
 
@@ -34,6 +33,8 @@ def failure_response(message, code=404):
 # app routes
 
 @app.route("/")
+def test_endpoint():
+  return success_response(os.environ["GROUP"] + " hack challenge endpoint :)")
 
 @app.route("/api/plants/")
 def get_plants():
@@ -105,7 +106,7 @@ def update_plant_by_id(plant_id):
   if last_watered is not None:
     plant.last_watered = last_watered
   if notes is not None:
-    plant.notes = notes\
+    plant.notes = notes
   
   db.session.commit()
   return success_response(plant.simple_serialize(), 201)
@@ -188,5 +189,5 @@ def upload():
     return success_response(asset.serialize(), 201)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=True)
+  app.run(host="0.0.0.0", port=8000, debug=True)
 

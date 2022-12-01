@@ -14,7 +14,7 @@ db = SQLAlchemy()
 
 ## CONSTANTS
 EXTENSIONS = ["png", "gif", "jpg", "jpeg"]
-BASE_DIR = os.cwd()
+BASE_DIR = os.getcwd()
 S3_BUCKET_NAME = os.environ.get("S3_BUCKET_NAME")
 S3_BASE_URL = f"https://{S3_BUCKET_NAME}.s3.us-east-1.amazonaws.com"
 
@@ -29,7 +29,7 @@ class Asset(db.Model):
     extension = db.Column(db.String, nullable = False)
     width = db.Column(db.Integer, nullable = False)
     height = db.Column(db.Integer, nullable = False)
-    created_at = db.Column(db.Datetime, nullable = False)
+    created_at = db.Column(db.DateTime, nullable = False)
 
     def __init__(self, **kwargs):
         """
